@@ -3,7 +3,7 @@
  * This function should return a cipher text for a given key and plaintext
  *
  */
-fn encode(key: Vec<u8>, plaintext: Vec<u8>) -> Vec<u8> {
+pub fn encode(key: Vec<u8>, plaintext: Vec<u8>) -> Vec<u8> {
 	let mut ciphertext = Vec::new();
 	ciphertext
 }
@@ -12,7 +12,7 @@ fn encode(key: Vec<u8>, plaintext: Vec<u8>) -> Vec<u8> {
  * This function should return a plaintext for a given key and ciphertext
  *
  */
-fn decode(key: Vec<u8>, ciphertext: Vec<u8>) -> Vec<u8> {
+pub fn decode(key: Vec<u8>, ciphertext: Vec<u8>) -> Vec<u8> {
 	let mut plaintext = Vec::new();
 	plaintext
 }
