@@ -79,20 +79,12 @@ mod utils {
     use super::{ops, Word};
 
     pub(crate) fn bytes_to_words(bytes: &[u8], dst: &mut [Word]) {
-        println!("bytes = {:02x?}", bytes);
-        println!("bytes.len() = {:x?}", bytes.len());
-
-        println!("dst = {:02x?}", dst);
-        println!("dst.len() = {:x?}", dst.len());
-
         const BITS_PER_BYTE: usize = 8;
 
         for i in (0..bytes.len()).rev() {
             let e = i as usize / std::mem::size_of::<Word>();
             dst[e] = ops::plus(ops::left_rotation(dst[e],BITS_PER_BYTE as u32), bytes[i as usize] as Word);
         }
-
-        println!("dst = {:08x?}", dst);
     }
 }
 
@@ -124,7 +116,6 @@ mod algo {
 
     fn expand_key(key: Key) -> ExpandedKeyTable {
         // convert the secret key from bytes to words
-        // let mut L: KeyWords = utils::key_bytes_to_words(key);
         let mut L: KeyWords = [0; KEY_WORDS_SIZE];
         utils::bytes_to_words(&key, &mut L[..]);
 
@@ -138,15 +129,11 @@ mod algo {
         let mut j = 0;
         let mut A = 0;
         let mut B = 0;
-        println!("EXPANDED_KEY_TABLE_SIZE = {}, KEY_WORDS_SIZE = {}", EXPANDED_KEY_TABLE_SIZE, KEY_WORDS_SIZE);
         for _ in 0..3 * std::cmp::max(EXPANDED_KEY_TABLE_SIZE,KEY_WORDS_SIZE) {	// 3*max(t,c) times
             S[i] = ops::left_rotation(ops::plus(S[i], ops::plus(A, B)), 3);
             A = S[i];
             L[j] = ops::left_rotation(ops::plus(L[j], ops::plus(A, B)), ops::plus(A, B));
             B = L[j];
-
-            println!("S[{}] = {:08x?}", i, S[i]);
-            println!("L[{}] = {:08x?}", j, L[j]);
 
             i = (i + 1) % EXPANDED_KEY_TABLE_SIZE;
             j = (j + 1) % KEY_WORDS_SIZE;
@@ -165,11 +152,9 @@ mod algo {
 
         A = ops::plus(A,S[0]);
         B = ops::plus(B,S[1]);
-
         for i in 1..=NUMBER_OF_ROUNDS {
             A = ops::plus(ops::left_rotation(ops::bitwise_xor(A, B), B),S[ 2*i      as usize]);
             B = ops::plus(ops::left_rotation(ops::bitwise_xor(B, A), A),S[(2*i + 1) as usize]);
-            println!("A = {:08x?}, B = {:08x?}", A, B);
         }
 
         (A, B)
