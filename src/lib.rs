@@ -8,13 +8,12 @@ mod rc5;
  *
  */
 pub fn encode(key: Vec<u8>, plaintext: Vec<u8>) -> Vec<u8> {
-	let mut ciphertext = Vec::new();
-
 	let mut k: rc5::Key = [0; rc5::KEY_LENGTH_BYTES as usize];
 	k.copy_from_slice(key.as_slice());
-	let mut pt: rc5::BlockBytes = [0; rc5::BLOCK_BYTES];
+	let mut pt: rc5::BlockBytes = [0; rc5::BLOCK_BYTES_SIZE];
 	pt.copy_from_slice(plaintext.as_slice());
 
+	let mut ciphertext = Vec::new();
 	ciphertext.extend_from_slice(&rc5::encrypt_bytes(k,pt));
 	ciphertext
 }
@@ -24,13 +23,12 @@ pub fn encode(key: Vec<u8>, plaintext: Vec<u8>) -> Vec<u8> {
  *
  */
 pub fn decode(key: Vec<u8>, ciphertext: Vec<u8>) -> Vec<u8> {
-	let mut plaintext = Vec::new();
-
 	let mut k: rc5::Key = [0; rc5::KEY_LENGTH_BYTES as usize];
 	k.copy_from_slice(key.as_slice());
-	let mut ct: rc5::BlockBytes = [0; rc5::BLOCK_BYTES];
+	let mut ct: rc5::BlockBytes = [0; rc5::BLOCK_BYTES_SIZE];
 	ct.copy_from_slice(ciphertext.as_slice());
 
+	let mut plaintext = Vec::new();
 	plaintext.extend_from_slice(&rc5::decrypt_bytes(k, ct));
 	plaintext
 }
